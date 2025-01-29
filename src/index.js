@@ -13,8 +13,6 @@ let lightbox = new SimpleLightbox('.gallery-link', {
   captionDelay: 250,
 });
 
-console.log(lightbox);
-
 let currentPage = 1;
 let currentSearch = '';
 
@@ -44,12 +42,13 @@ function onSearch(evt) {
       }
 
       gallery.insertAdjacentHTML('beforeend', creatMarkup(data.hits));
+      lightbox.refresh();
+      scrollPage();
 
       const { totalHits } = data;
       Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
 
       const currentHits = currentPage * data.hits.length;
-      console.log(totalHits, currentHits);
 
       if (totalHits <= currentHits) {
         Notiflix.Notify.warning(
@@ -61,27 +60,21 @@ function onSearch(evt) {
         }, 1000);
       }
     })
-    .catch(err =>
-      Notiflix.Notify.failure('Ops, there is a problem here! Try again late!')
-    );
-  lightbox.refresh();
-  form.reset();
+    .catch(err => {
+      Notiflix.Notify.failure('Ops, there is a problem here! Try again late!');
+      console.log(err);
+    })
+    .finally(() => form.reset());
 }
-// try {
-//   const requestParam = evt.target.searchQuery.value.trim();
-//   const searchImg = await fetchPhoto(requestParam);
-//   gallery.insertAdjacentHTML('beforeend', creatMarkup(searchImg.hits));
-// } catch (err) {
-//   console.log(err);
-// }
 
 function onClick() {
   currentPage += 1;
+
   fetchPhoto(currentSearch, currentPage)
     .then(data => {
       gallery.insertAdjacentHTML('beforeend', creatMarkup(data.hits));
 
-      // const { totalHits } = data;
+      lightbox.refresh();
     })
     .catch(err => console.log(err));
 }
@@ -98,18 +91,50 @@ function creatMarkup(arr) {
         comments,
         downloads,
       }) =>
-        `<div class="gallery-item">
-  <a class="gallery-link" href="${largeImageURL}">
-    <img class="gallery-image" src="${webformatURL}" alt="${tags}" loading="lazy" />
-    <ul class="img-descr-list">
-      <li>likes: ${likes}</li>
-      <li>views: ${views}</li>
-      <li>comments: ${comments}</li>
-      <li>downloads: ${downloads}</li>
-    </ul>
+        `<a class="gallery-link" href="${largeImageURL}">
+        <div class="photo-card">
+           <img class="gallery-image" src="${webformatURL}" alt="${tags}" loading="lazy" />
+           <div class="info">
+              <p class="info-item">
+                 <b>Likes ${likes} </b>
+             </p>
+             <p class="info-item">
+                 <b>Views ${views}</b>
+            </p>
+           <p class="info-item">
+               <b>Comments ${comments}</b>
+           </p>
+          <p class="info-item">
+           <b>Downloads ${downloads}</b>
+          </p>
+     </div>
+     </div>
   </a>
-</div>
 `
     )
     .join('');
 }
+
+function scrollPage() {
+  const { height: cardHeight } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
+
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
+}
+
+// try {
+//   const requestParam = evt.target.searchQuery.value.trim();
+//   const searchImg = await fetchPhoto(requestParam);
+//   gallery.insertAdjacentHTML('beforeend', creatMarkup(searchImg.hits));
+// } catch (err) {
+//   console.log(err);
+// }
+
+// let simpleLightBox;
+// simpleLightBox = new SimpleLightbox('.gallery a').refresh();
+// simpleLightBox.destroy();
+// simpleLightBox = new SimpleLightbox('.gallery a').refresh();

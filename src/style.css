@@ -35,22 +35,19 @@ body {
   margin-top: 70px;
 }
 
-.gallery-item {
-  width: 400px;
-  /* object-fit: contain; */
-}
-
-.gallery-item img {
-  width: 400px;
-  /* object-fit: contain; */
-}
-
 .gallery-link {
+  display: block;
   color: inherit;
   text-decoration: none;
 }
 
-.img-descr-list {
+.gallery-img {
+  display: block;
+  object-fit: cover;
+  height: 30vh;
+}
+
+.info {
   display: flex;
   list-style: none;
   justify-content: space-between;
