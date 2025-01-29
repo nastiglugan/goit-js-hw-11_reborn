@@ -64,8 +64,9 @@ function onSearch(evt) {
       }
     })
     .catch(err => {
-      Notiflix.Notify.failure('Ops, there is a problem here! Try again late!');
-      console.log(err);
+      Notiflix.Notify.failure(
+        `Ops, there is a problem here! Try again late! ${err.statusText}`
+      );
     })
     .finally(() => form.reset());
 }
@@ -92,7 +93,11 @@ function onLoad(entries, observer) {
           lightbox.refresh();
           scrollPage();
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+          Notiflix.Notify.failure(
+            `Ops, there is a problem here! Try again late! ${err.statusText}`
+          );
+        });
     }
   });
 }
