@@ -7,6 +7,11 @@ const form = document.querySelector('.search-form');
 const gallery = document.querySelector('.gallery');
 const target = document.querySelector('.js-guard');
 
+form.addEventListener('submit', onSearch);
+
+let currentPage = 1;
+let currentSearch = '';
+
 const options = {
   root: null,
   rootMargin: '200px',
@@ -20,11 +25,6 @@ let lightbox = new SimpleLightbox('.gallery-link', {
   captionsData: 'alt',
   captionDelay: 250,
 });
-
-let currentPage = 1;
-let currentSearch = '';
-
-form.addEventListener('submit', onSearch);
 
 function onSearch(evt) {
   gallery.innerHTML = '';
